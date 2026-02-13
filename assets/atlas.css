@@ -1,0 +1,21 @@
+:root{
+  --bg0:#070913;
+  --panel:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.10);
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.65);
+}
+
+html,body{height:100%; margin:0; background:var(--bg0); color:var(--text); font-family:system-ui,Segoe UI,Roboto,Arial;}
+.topbar{
+  position:sticky; top:0; z-index:5;
+  backdrop-filter: blur(10px);
+  background: rgba(7,9,19,.65);
+  border-bottom:1px solid var(--border);
+  padding:10px 12px;
+  display:flex; gap:10px; align-items:center; justify-content:space-between;
+}
+.pill{background:var(--panel); border:1px solid var(--border); padding:6px 10px; border-radius:999px; font-size:13px; color:var(--muted);}
+.viewport{height:calc(100vh - 52px); overflow:hidden; cursor:grab;}
+button{background:var(--panel); border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius:10px; cursor:pointer;}
+button:hover{filter:brightness(1.12);}
