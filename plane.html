@@ -1,1 +1,29 @@
 
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Atlas Pack · Plane</title>
+  <link rel="stylesheet" href="./assets/atlas.css"/>
+  <style>
+    #plane{position:relative; transform-origin:0 0;}
+    .card{position:absolute; width:140px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.35);}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="pill">Plane · drag to pan · wheel to zoom</div>
+    <div id="status" class="pill">Idle</div>
+  </div>
+
+  <div class="viewport">
+    <div id="plane"></div>
+  </div>
+
+  <script type="module">
+    import { bootPlane } from "./assets/plane.js";
+    bootPlane({ mount: document.getElementById("plane"), statusEl: document.getElementById("status") });
+  </script>
+</body>
+</html>
