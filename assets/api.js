@@ -1,24 +1,35 @@
 import { ATLAS } from "./config.js";
 
 export async function fetchAllItems(prefix = ATLAS.PREFIX) {
-  let cursor = null;
-  let items = [];
+  // Your worker base
+  const WORKER = ATLAS.WORKER.replace(/\/$/, "");
 
-  while (true) {
-    const url = new URL(ATLAS.WORKER);
-    url.searchParams.set("prefix", prefix);
-    url.searchParams.set("limit", String(ATLAS.PAGE_LIMIT));
-    if (cursor) url.searchParams.set("cursor", cursor);
-    url.searchParams.set("t", crypto.randomUUID());
+  // Call: https://valentine-worker.regalfyre.workers.dev/list
+  const url = new URL(WORKER + "/list");
 
-    const res = await fetch(url.toString());
-    if (!res.ok) throw new Error(`Worker error: ${res.status}`);
-    const data = await res.json();
+  // optional filtering (cards/)
+  if (prefix) url.searchParams.set("prefix", prefix);
 
-    items = items.concat(data.items || []);
-    if (!data.truncated || !data.cursor) break;
-    cursor = data.cursor;
-  }
+  // keep your cache-buster
+  url.searchParams.set("t", crypto.randomUUID());
 
-  return items;
+  const res = await fetch(url.toString());
+  if (!res.ok) throw new Error(`Worker error: ${res.status}`);
+
+  // Your worker's /list currently returns either:
+  // - an array of objects like [{ key: "cards/poem (1).png", ... }]
+  // - or an array of strings like ["cards/poem (1).png", ...]
+  const arr = await res.json();
+
+  // Convert each key into a URL your browser can load:
+  // https://valentine-worker.regalfyre.workers.dev/file/<key>
+  const baseFile = WORKER + "/file/";
+
+  return arr
+    .map(x => (typeof x === "string" ? x : x.key))
+    .filter(Boolean)
+    .map(key => ({
+      key,
+      url: baseFile + encodeURIComponent(key)
+    }));
 }
